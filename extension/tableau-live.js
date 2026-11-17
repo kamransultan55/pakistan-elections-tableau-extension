@@ -181,6 +181,11 @@ window.PK_TABLEAU_SOURCE = (function () {
   }
 
   async function init(onReady, onChange) {
+    // Only talk to Tableau when loaded as an extension (manifest URL carries ?ext=1).
+    // As a plain Web Page object (e.g. Tableau Public) boot straight from bundled data.
+    if (!/[?&]ext=1(&|$)/.test(window.location.search)) {
+      return false;
+    }
     if (!(window.tableau && tableau.extensions)) {
       return false;
     }
