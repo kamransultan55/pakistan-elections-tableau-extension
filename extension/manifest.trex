@@ -7,7 +7,7 @@
     <author name='Kamran Sultan' email='noreply@example.com' organization='' website='https://www.gallup.com.pk/' />
     <min-api-version>1.11</min-api-version>
     <source-location>
-      <url>http://localhost:8743/index.html</url>
+      <url>https://kamransultan55.github.io/pakistan-elections-tableau-extension/extension/index.html</url>
     </source-location>
     <icon>iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABV0lEQVR42u3cwQmEQBAEQCMwIEM5LkyDMRER7nUZKOiu0wsFE0HXz+122o9f1c2fxU0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgK4A2/o9PwBdAC5zH1RiAIAb0Q/EEA3wMPohGHIBGqafbBAK0Dz9WINEgE7pZxrEAXRNP9AgC+CF9NMMggBeSz/KAACAivRzDAAAKEo/xAAAAAC1AIXpJxgAAAAAAAAAAAAAAAAAAAAAAHwLAgAAgBcxL2IAtCK0IgBoxmnG6YZqR2tH2wdYyFjI2IhZSVpJ2glbylvK+1cEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQPgAAAAAAAACg7v7j01V5QpmQVwAAAABJRU5ErkJggg==</icon>
     <permissions>
