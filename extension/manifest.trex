@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<manifest manifest-version='0.1' xmlns='http://www.tableau.com/xml/extension_manifest'>
+  <worksheet-extension id='pk.gallup.elections.dashboard' extension-version='1.0.0'>
+    <default-locale>en_US</default-locale>
+    <name>Pakistan Elections 1970-2024</name>
+    <description>Interactive, fully custom-coded dashboard exploring Pakistan's National Assembly election results, 1970-2024: balance of power over time, turnout trends, a rotating globe, a province-level results map, a searchable constituency explorer, and a guided "Play Explainer" tour through every election. Reads its data live from the Tableau worksheet, so updating the underlying data source updates the dashboard automatically.</description>
+    <author name='Kamran Sultan' email='noreply@example.com' organization='' website='https://www.gallup.com.pk/' />
+    <min-api-version>1.11</min-api-version>
+    <source-location>
+      <url>http://localhost:8743/index.html</url>
+    </source-location>
+    <icon>iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABV0lEQVR42u3cwQmEQBAEQCMwIEM5LkyDMRER7nUZKOiu0wsFE0HXz+122o9f1c2fxU0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgK4A2/o9PwBdAC5zH1RiAIAb0Q/EEA3wMPohGHIBGqafbBAK0Dz9WINEgE7pZxrEAXRNP9AgC+CF9NMMggBeSz/KAACAivRzDAAAKEo/xAAAAAC1AIXpJxgAAAAAAAAAAAAAAAAAAAAAAHwLAgAAgBcxL2IAtCK0IgBoxmnG6YZqR2tH2wdYyFjI2IhZSVpJ2glbylvK+1cEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQPgAAAAAAAACg7v7j01V5QpmQVwAAAABJRU5ErkJggg==</icon>
+    <permissions>
+      <permission>full data</permission>
+    </permissions>
+    <encoding id='field'>
+      <display-name>Data</display-name>
+      <role-spec>
+        <role-type>discrete-dimension</role-type>
+        <role-type>discrete-measure</role-type>
+        <role-type>continuous-dimension</role-type>
+        <role-type>continuous-measure</role-type>
+      </role-spec>
+      <fields max-count='50' />
+      <encoding-icon token='level' />
+    </encoding>
+  </worksheet-extension>
+</manifest>
