@@ -8,38 +8,38 @@
   var PROVINCES = [];
 
   var RAW_PARTY_COLOR = {
-    "PPP": "#ff4d7d", "PPPP": "#ff4d7d",
-    "PML-N": "#2de08f", "PML(N)": "#2de08f",
-    "PML-Q": "#5eead4", "PML-Q (Q)": "#5eead4", "PML-Coun": "#5eead4",
-    "PTI": "#ff9f43",
-    "MQM": "#c084fc", "MQM-P": "#c084fc",
-    "ANP": "#f87171",
-    "JUI-F": "#a3e635", "JUI": "#a3e635", "JUI-W.P": "#a3e635",
-    "JI": "#60a5fa",
-    "BNP": "#e0b48a",
-    "IND": "#94a3b8",
-    "IND (PTI)": "#ffd166",
-    "IJI": "#4ade80",
-    "Pakistan Muslim League(QA)": "#86efac",
-    "Muttahidda Majlis-e-Amal Pakistan": "#38bdf8",
-    "PDA": "#fb7185"
+    "PPP": "#d0344a", "PPPP": "#d0344a",
+    "PML-N": "#22a35e", "PML(N)": "#22a35e",
+    "PML-Q": "#7cc79a", "PML-Q (Q)": "#7cc79a", "PML-Coun": "#7cc79a",
+    "PTI": "#e8912d",
+    "MQM": "#6f8fd9", "MQM-P": "#6f8fd9",
+    "ANP": "#e0706a",
+    "JUI-F": "#9bb54a", "JUI": "#9bb54a", "JUI-W.P": "#9bb54a",
+    "JI": "#3b82c4",
+    "BNP": "#b79572",
+    "IND": "#8a97a8",
+    "IND (PTI)": "#f2c14e",
+    "IJI": "#4fae7a",
+    "Pakistan Muslim League(QA)": "#9fd6b4",
+    "Muttahidda Majlis-e-Amal Pakistan": "#2f7fb5",
+    "PDA": "#b8606e"
   };
   var GROUP_COLOR = {
-    "PTI": "#ff9f43", "PPP (s)/PDA": "#ff4d7d", "PML (s)/IJI/PNA": "#2de08f",
-    "Religious Parties": "#38bdf8", "Province Parties": "#c084fc",
-    "Independent Parties": "#94a3b8", "Other Parties": "#64748b"
+    "PTI": "#e8912d", "PPP (s)/PDA": "#d0344a", "PML (s)/IJI/PNA": "#22a35e",
+    "Religious Parties": "#3b82c4", "Province Parties": "#7a8fb0",
+    "Independent Parties": "#8a97a8", "Other Parties": "#5b6778"
   };
-  function groupColor(sg, g) { return GROUP_COLOR[g] || sg.colors[g] || "#64748b"; }
+  function groupColor(sg, g) { return GROUP_COLOR[g] || sg.colors[g] || "#5b6778"; }
 
 
   var THEME = {
     dark: {
       text: "#eaf2ff", textMid: "#9fb3d6", textLo: "#6479a3",
-      tooltipBg: "#0c1736", tooltipBorder: "rgba(94,234,212,0.35)",
+      tooltipBg: "#0c1736", tooltipBorder: "rgba(224,176,74,0.4)",
       gridLine: "rgba(120,160,255,0.09)", axisLine: "rgba(120,160,255,0.2)",
       mapNoData: "#13224a", mapBorder: "rgba(140,190,255,0.28)",
       globeOcean1: "#12306e", globeOcean2: "#050b24", globeLand: "#1f3a7a",
-      globeGraticule: "rgba(120,180,255,0.12)", globeLandStroke: "rgba(140,200,255,0.22)", globeOuterStroke: "rgba(94,234,212,0.35)",
+      globeGraticule: "rgba(120,180,255,0.12)", globeLandStroke: "rgba(140,200,255,0.22)", globeOuterStroke: "rgba(224,176,74,0.35)",
       othersBar: "#475a85"
     },
     light: {
@@ -196,6 +196,19 @@
   // KPI row
   // ===================================================================
   var kpiRowEl = document.getElementById("kpiRow");
+  function svgIcon(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
+  }
+  var ICON = {
+    check: svgIcon('<path d="M4 12.5l5 5L20 6.5"/>'),
+    bars: svgIcon('<path d="M5 20V11M12 20V4M19 20v-6"/>'),
+    star: svgIcon('<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
+    bolt: svgIcon('<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>'),
+    trend: svgIcon('<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>'),
+    users: svgIcon('<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.2a3 3 0 010 5.6M21 20c0-2.6-1.4-4.800-3.500-5.600"/>'),
+    growth: svgIcon('<path d="M3 18l5-5 4 3 8-9"/><path d="M3 21h18"/>'),
+    trophy: svgIcon('<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/>')
+  };
   function esc(v) {
     return String(v === null || v === undefined ? "" : v).replace(/[&<>"]/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
@@ -232,27 +245,27 @@
     var growth = firstRec && firstRec.registered_voters ? lastRec.registered_voters / firstRec.registered_voters : null;
 
     var tiles = [];
-    tiles.push({ ico: "🗳️", num: pct(rec.turnout_pct), lbl: "National turnout · " + year,
+    tiles.push({ ico: ICON.check, num: pct(rec.turnout_pct), lbl: "National turnout · " + year,
       txt: "<b>" + compactNum(rec.votes_cast) + "</b> ballots from <b>" + compactNum(rec.registered_voters) + "</b> registered voters. " +
         (recordRec && recordRec.year === year ? "The highest turnout on record." : "The record is <b>" + pct(recordRec ? recordRec.turnout_pct : null) + "</b> in <b>" + (recordRec ? recordRec.year : "—") + "</b>.") });
-    tiles.push({ ico: "🧮", num: compactNum(rec.votes_cast), lbl: "Votes cast",
+    tiles.push({ ico: ICON.bars, num: compactNum(rec.votes_cast), lbl: "Votes cast",
       txt: prevRec
         ? "<b>" + compactNum(Math.abs(rec.votes_cast - prevRec.votes_cast)) + (rec.votes_cast >= prevRec.votes_cast ? " more" : " fewer") + "</b> than in " + prevYear + ", across <b>" + fullNum(rec.seats) + "</b> seats and <b>" + fullNum(rec.parties_contested) + "</b> parties."
         : "Across <b>" + fullNum(rec.seats) + "</b> seats contested by <b>" + fullNum(rec.parties_contested) + "</b> parties." });
-    tiles.push({ ico: "👑", num: fullNum(lead.seats), lbl: "Seats · " + (lead.party || "—"),
+    tiles.push({ ico: ICON.star, num: fullNum(lead.seats), lbl: "Seats · " + (lead.party || "—"),
       txt: "<b>" + esc(lead.party || "—") + "</b> took the most seats in " + year + " — <b>" + (rec.seats ? Math.round(lead.seats / rec.seats * 100) : 0) + "%</b> of the National Assembly." });
-    tiles.push({ ico: "⚡", num: closest ? fullNum(closest.margin) : "—", lbl: "Votes between 1st and 2nd · " + year,
+    tiles.push({ ico: ICON.bolt, num: closest ? fullNum(closest.margin) : "—", lbl: "Votes between 1st and 2nd · " + year,
       txt: closest ? "<b>" + esc(closest.constituency || closest.na) + "</b>: <b>" + esc(closest.winner_party) + "</b> edged out <b>" + esc(closest.runner_up_party || "—") + "</b>. Proof that one vote can matter." : "No data." });
-    tiles.push({ ico: "💥", num: slide ? slide.margin_pct.toFixed(1) + "%" : "—", lbl: "Biggest landslide · " + year,
+    tiles.push({ ico: ICON.trend, num: slide ? slide.margin_pct.toFixed(1) + "%" : "—", lbl: "Biggest landslide · " + year,
       txt: slide ? "<b>" + esc(slide.constituency || slide.na) + "</b> — <b>" + esc(slide.winner_party) + "</b> won by <b>" + fullNum(slide.margin) + "</b> votes. The runner-up barely made the photo." : "No data." });
-    tiles.push({ ico: "👥", num: crowded ? fullNum(crowded.candidates_count) : "—", lbl: "Candidates on one ballot · " + year,
+    tiles.push({ ico: ICON.users, num: crowded ? fullNum(crowded.candidates_count) : "—", lbl: "Candidates on one ballot · " + year,
       txt: crowded ? "<b>" + esc(crowded.constituency || crowded.na) + "</b> had the longest ballot paper of the year. <b>" + esc(crowded.winner_party) + "</b> came out on top." : "No data." });
-    tiles.push({ ico: "📈", num: growth ? growth.toFixed(growth >= 10 ? 0 : 1) + "×" : "—", lbl: "Voter roll growth since " + firstYear,
+    tiles.push({ ico: ICON.growth, num: growth ? growth.toFixed(growth >= 10 ? 0 : 1) + "×" : "—", lbl: "Voter roll growth since " + firstYear,
       txt: "From <b>" + compactNum(firstRec.registered_voters) + "</b> voters in " + firstYear + " to <b>" + compactNum(lastRec.registered_voters) + "</b> in " + lastYear + ". The electorate never stops growing." });
-    tiles.push({ ico: "🏆", num: fullNum(king.seats), lbl: "All-time seats · " + king.party,
+    tiles.push({ ico: ICON.trophy, num: fullNum(king.seats), lbl: "All-time seats · " + king.party,
       txt: "<b>" + esc(king.party) + "</b> tops the " + firstYear + "–" + lastYear + " table. Runner-up <b>" + esc(second.party) + "</b> holds <b>" + fullNum(second.seats) + "</b>." });
 
-    var tones = ["rose", "blue", "violet"];
+    var tones = ["green", "navy", "slate"];
     kpiRowEl.innerHTML = tiles.map(function (t, i) {
       return '<div class="tile tone-' + tones[i % 3] + '">' +
         '<div class="tile-l"><div class="tile-ico">' + t.ico + '</div><div class="tile-num">' + t.num + '</div><div class="tile-lbl">' + t.lbl + "</div></div>" +
@@ -329,12 +342,12 @@
         { type: "value", axisLabel: { color: T().textLo, fontSize: 11, formatter: function (v) { return compactNum(v); } }, splitLine: { show: false } }
       ],
       series: [
-        { name: "Registered voters", type: "bar", yAxisIndex: 1, data: registered, itemStyle: { color: "rgba(139,92,246,0.5)", borderRadius: [4, 4, 0, 0] }, barWidth: "46%" },
+        { name: "Registered voters", type: "bar", yAxisIndex: 1, data: registered, itemStyle: { color: "rgba(76,112,190,0.55)", borderRadius: [4, 4, 0, 0] }, barWidth: "46%" },
         {
           name: "Turnout %", type: "line", yAxisIndex: 0, data: turnout, smooth: true, symbolSize: 7,
-          lineStyle: { color: "#22d3ee", width: 3, shadowBlur: 12, shadowColor: "rgba(34,211,238,0.7)" }, itemStyle: { color: "#22d3ee" },
-          areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(34,211,238,0.35)" }, { offset: 1, color: "rgba(34,211,238,0)" }] } },
-          markPoint: selIdx >= 0 ? { data: [{ coord: [selIdx, turnout[selIdx]], itemStyle: { color: "#fbbf24" } }], symbolSize: 14, label: { show: false } } : undefined
+          lineStyle: { color: "#e0b04a", width: 3 }, itemStyle: { color: "#e0b04a" },
+          areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(224,176,74,0.28)" }, { offset: 1, color: "rgba(224,176,74,0)" }] } },
+          markPoint: selIdx >= 0 ? { data: [{ coord: [selIdx, turnout[selIdx]], itemStyle: { color: "#e0b04a" } }], symbolSize: 14, label: { show: false } } : undefined
         }
       ]
     }, true);
@@ -564,7 +577,7 @@
       visualMap = {
         min: vmin, max: vmax, left: 10, bottom: 10, calculable: true, orient: "horizontal",
         textStyle: { color: T().textMid, fontSize: 10 },
-        inRange: { color: metric === "registered" ? ["#2a1a5e", "#a78bfa"] : ["#0b2a5a", "#22d3ee"] }
+        inRange: { color: metric === "registered" ? ["#1c2a4a", "#6f8fd9"] : ["#0b2a1c", "#2fb36d"] }
       };
     }
 
@@ -588,8 +601,8 @@
         type: "map", map: "PAK_ADM1", roam: true, scaleLimit: { min: 0.8, max: 6 },
         label: { show: true, color: "#cdd5df", fontSize: 10.5 },
         itemStyle: { borderColor: T().mapBorder, borderWidth: 1 },
-        emphasis: { label: { color: "#fff" }, itemStyle: { borderColor: "#fbbf24", borderWidth: 2, shadowBlur: 14, shadowColor: "rgba(251,191,36,0.6)" } },
-        select: { itemStyle: { borderColor: "#fbbf24", borderWidth: 2.5 } },
+        emphasis: { label: { color: "#fff" }, itemStyle: { borderColor: "#e0b04a", borderWidth: 2, shadowBlur: 14, shadowColor: "rgba(224,176,74,0.6)" } },
+        select: { itemStyle: { borderColor: "#e0b04a", borderWidth: 2.5 } },
         data: data
       }]
     }, true);
@@ -678,8 +691,8 @@
       .attr("fill", T().globeLand).attr("stroke", T().globeLandStroke).attr("stroke-width", 0.5);
     globeLandPath = landPath;
 
-    var marker = globeSvg.append("circle").attr("r", 5).attr("fill", "#fbbf24").attr("stroke", "#050b24").attr("stroke-width", 1.5);
-    var pulse = globeSvg.append("circle").attr("r", 5).attr("fill", "none").attr("stroke", "#fbbf24").attr("stroke-width", 1.5).attr("opacity", 0.7);
+    var marker = globeSvg.append("circle").attr("r", 5).attr("fill", "#e0b04a").attr("stroke", "#050b24").attr("stroke-width", 1.5);
+    var pulse = globeSvg.append("circle").attr("r", 5).attr("fill", "none").attr("stroke", "#e0b04a").attr("stroke-width", 1.5).attr("opacity", 0.7);
 
     globeLabelText = globeSvg.append("text").attr("x", 10).attr("y", h - 14).attr("fill", T().textMid).attr("font-size", 10.5).attr("font-family", "Inter, sans-serif")
       .text("Pakistan • 30.37°N, 69.35°E");
@@ -816,7 +829,7 @@
     var badgeText = document.getElementById("envBadgeText");
     if (liveOk) {
       badgeText.textContent = "Running inside Tableau — live data";
-      badge.querySelector(".dot").style.background = "#22d3ee";
+      badge.querySelector(".dot").style.background = "#34b36f";
     } else {
       badgeText.textContent = "Standalone preview";
       boot(window.PK_ELECTIONS_DATA);
