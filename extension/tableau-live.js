@@ -184,8 +184,16 @@ window.PK_TABLEAU_SOURCE = (function () {
     if (!(window.tableau && tableau.extensions)) {
       return false;
     }
+    // Not an extension host (e.g. a plain Web Page object on Tableau Public):
+    // initializeAsync may never settle, so cap the wait and fall back to the
+    // bundled data instead of leaving the dashboard blank.
     try {
-      await tableau.extensions.initializeAsync();
+      await Promise.race([
+        tableau.extensions.initializeAsync(),
+        new Promise(function (_, reject) {
+          setTimeout(function () { reject(new Error("Tableau extension init timed out")); }, 3500);
+        })
+      ]);
     } catch (e) {
       return false;
     }
