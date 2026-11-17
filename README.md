@@ -5,9 +5,12 @@ and reads its numbers **live** from Tableau's own data source and calculated fie
 No native Tableau charts: ECharts + d3 charts, province map, rotating globe, a guided
 "Play Explainer" tour, constituency explorer and a light/dark theme toggle.
 
-![Dark overview](screenshots/01_overview_dark_HD.jpg)
-![Geographic](screenshots/04_geographic_dark_HD.jpg)
-![Demo](screenshots/pakistan-elections-dashboard-demo.gif)
+### ▶ [Live demo](https://kamransultan55.github.io/pakistan-elections-tableau-extension/extension/index.html) &nbsp;·&nbsp; [Geographic view](https://kamransultan55.github.io/pakistan-elections-tableau-extension/extension/index.html#map)
+
+![Overview](screenshots/preview_overview_dark.png)
+![Geographic view: globe and province map](screenshots/preview_geographic_dark.png)
+
+The live demo runs standalone with bundled sample data. Inside Tableau the same page reads your data live.
 
 ## How it works
 Tableau worksheet (data source + LOD calcs) → Extensions API `getSummaryDataReaderAsync`
