@@ -217,6 +217,31 @@ a{color:var(--flag-green-br);text-decoration:none;}
 .kpi .delta.up{color:var(--flag-green-br);}
 .kpi .delta.down{color:var(--accent-red);}
 
+
+/* ---------- Fun-fact story tiles ---------- */
+.facts-title{font-size:11px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-lo);margin:2px 0 10px;}
+.facts-title span{color:var(--flag-green-br);}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr)) !important;}
+.tile{
+  position:relative;display:flex;align-items:stretch;gap:clamp(12px,1.2vw,22px);
+  padding:clamp(14px,1.4vw,24px);border-radius:22px;color:#fff;overflow:hidden;min-height:clamp(150px,17vh,200px);
+  box-shadow:0 18px 40px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.22);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.tile:hover{transform:translateY(-3px);box-shadow:0 26px 46px -22px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.3);}
+.tile::before{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 100% 0%, rgba(255,255,255,0.18), transparent 55%);pointer-events:none;}
+.tone-rose{background:linear-gradient(135deg,#f43f7a 0%,#a3124f 100%);}
+.tone-blue{background:linear-gradient(135deg,#0ea5e9 0%,#1d4ed8 100%);}
+.tone-violet{background:linear-gradient(135deg,#a855f7 0%,#5b21b6 100%);}
+.tile-l{flex:0 0 auto;max-width:48%;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;position:relative;}
+.tile-ico{font-size:clamp(22px,2vw,32px);width:clamp(38px,3.2vw,52px);height:clamp(38px,3.2vw,52px);display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(255,255,255,0.18);backdrop-filter:blur(6px);margin-bottom:auto;}
+.tile-num{font-size:clamp(30px,3.3vw,56px);font-weight:900;letter-spacing:-0.03em;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.tile-lbl{font-size:clamp(8.5px,0.62vw,10.5px);font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.82);line-height:1.3;}
+.tile-sep{flex:0 0 1px;background:rgba(255,255,255,0.25);margin:4px 0;}
+.tile-r{flex:1;display:flex;align-items:center;font-size:clamp(12.5px,1vw,15.5px);line-height:1.5;color:rgba(255,255,255,0.92);position:relative;}
+.tile-r b{color:#fff;font-weight:800;}
+:root[data-theme="light"] .tile{box-shadow:0 18px 36px -22px rgba(40,50,140,0.55), inset 0 1px 0 rgba(255,255,255,0.3);}
+
 /* ---------- Panels / Grid ---------- */
 .grid{display:grid;gap:clamp(10px,1vw,18px);margin-bottom:clamp(10px,1vw,18px);}
 .grid.g-2-1{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);}
@@ -280,11 +305,12 @@ table.data-tbl tbody td.strong{color:var(--text-hi);font-weight:600;}
 .ftr .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--surf-mid);border:1px solid var(--panel-border-soft);}
 
 @media (max-width:1180px){
-  .kpis{grid-template-columns:repeat(3,1fr);}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
   .grid.g-2-1, .grid.g-1-1{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
-  .kpis{grid-template-columns:repeat(2,1fr);}
+  .kpis{grid-template-columns:minmax(0,1fr) !important;}
+  .tile{min-height:140px;}
   .app{padding:14px;}
 }
 
@@ -337,6 +363,7 @@ table.data-tbl tbody td.strong{color:var(--text-hi);font-weight:600;}
 
   <div id="tabOverview" class="tab-pane active">
 
+  <div class="facts-title">The fun facts &middot; <span id="factsYear"></span></div>
   <div class="kpis" id="kpiRow"></div>
 
   <div class="grid g-2-1">

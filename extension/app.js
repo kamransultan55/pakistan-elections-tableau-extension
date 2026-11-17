@@ -196,37 +196,71 @@
   // KPI row
   // ===================================================================
   var kpiRowEl = document.getElementById("kpiRow");
+  function esc(v) {
+    return String(v === null || v === undefined ? "" : v).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
   function renderKPIs(year) {
     var rec = nationalRecord(year);
     var idx = YEARS.indexOf(year);
-    var prevRec = idx > 0 ? nationalRecord(YEARS[idx - 1]) : null;
+    var prevYear = idx > 0 ? YEARS[idx - 1] : null;
+    var prevRec = prevYear ? nationalRecord(prevYear) : null;
+    var firstYear = YEARS[0], lastYear = YEARS[YEARS.length - 1];
+    var firstRec = nationalRecord(firstYear), lastRec = nationalRecord(lastYear);
     var lead = leadingPartyForYear(year);
+    var ySeats = DATA.seats.filter(function (x) { return x.year === year; });
 
-    function delta(curr, prev, fmt) {
-      if (prev === null || curr === null || curr === undefined || prev === undefined) return "";
-      var d = curr - prev;
-      if (Math.abs(d) < 1e-9) return "<span class=\"delta\">No change vs " + YEARS[idx - 1] + "</span>";
-      var dir = d > 0 ? "up" : "down";
-      var arrow = d > 0 ? "↑" : "↓";
-      return "<span class=\"delta " + dir + "\">" + arrow + " " + fmt(Math.abs(d)) + " vs " + YEARS[idx - 1] + "</span>";
+    function pick(list, key, wantMax) {
+      var best = null;
+      list.forEach(function (x) {
+        var v = x[key];
+        if (v === null || v === undefined || isNaN(v)) return;
+        if (best === null || (wantMax ? v > best[key] : v < best[key])) best = x;
+      });
+      return best;
     }
+    var closest = pick(ySeats.filter(function (x) { return x.margin > 0; }), "margin", false);
+    var slide = pick(ySeats, "margin_pct", true);
+    var crowded = pick(ySeats, "candidates_count", true);
+    var recordRec = null;
+    DATA.national_trend.forEach(function (r) {
+      if (r.turnout_pct !== null && r.turnout_pct !== undefined && (!recordRec || r.turnout_pct > recordRec.turnout_pct)) recordRec = r;
+    });
+    var tops = DATA.top_parties_all_time.filter(function (r) { return r.party !== "Others"; });
+    var king = tops[0] || { party: "—", seats: 0 }, second = tops[1] || { party: "—", seats: 0 };
+    var growth = firstRec && firstRec.registered_voters ? lastRec.registered_voters / firstRec.registered_voters : null;
 
-    var cards = [
-      { lbl: "Seats contested", val: fullNum(rec.seats), sfx: "", accent: "var(--flag-green-br)", delta: "" },
-      { lbl: "Registered voters", val: compactNum(rec.registered_voters), sfx: "", accent: "var(--flag-gold)", delta: prevRec ? delta(rec.registered_voters, prevRec.registered_voters, compactNum) : "" },
-      { lbl: "Votes cast", val: compactNum(rec.votes_cast), sfx: "", accent: "var(--accent-blue)", delta: prevRec ? delta(rec.votes_cast, prevRec.votes_cast, compactNum) : "" },
-      { lbl: "National turnout", val: pct(rec.turnout_pct), sfx: "", accent: "var(--flag-green-br)", delta: prevRec ? delta(rec.turnout_pct, prevRec.turnout_pct, function (v) { return v.toFixed(1) + "pp"; }) : "" },
-      { lbl: "Parties contested", val: fullNum(rec.parties_contested), sfx: "", accent: "var(--accent-red)", delta: "" },
-      { lbl: "Leading party", val: lead.party || "—", sfx: lead.seats + " seats", accent: colorForParty(lead.party), delta: "" }
-    ];
+    var tiles = [];
+    tiles.push({ ico: "🗳️", num: pct(rec.turnout_pct), lbl: "National turnout · " + year,
+      txt: "<b>" + compactNum(rec.votes_cast) + "</b> ballots from <b>" + compactNum(rec.registered_voters) + "</b> registered voters. " +
+        (recordRec && recordRec.year === year ? "The highest turnout on record." : "The record is <b>" + pct(recordRec ? recordRec.turnout_pct : null) + "</b> in <b>" + (recordRec ? recordRec.year : "—") + "</b>.") });
+    tiles.push({ ico: "🧮", num: compactNum(rec.votes_cast), lbl: "Votes cast",
+      txt: prevRec
+        ? "<b>" + compactNum(Math.abs(rec.votes_cast - prevRec.votes_cast)) + (rec.votes_cast >= prevRec.votes_cast ? " more" : " fewer") + "</b> than in " + prevYear + ", across <b>" + fullNum(rec.seats) + "</b> seats and <b>" + fullNum(rec.parties_contested) + "</b> parties."
+        : "Across <b>" + fullNum(rec.seats) + "</b> seats contested by <b>" + fullNum(rec.parties_contested) + "</b> parties." });
+    tiles.push({ ico: "👑", num: fullNum(lead.seats), lbl: "Seats · " + (lead.party || "—"),
+      txt: "<b>" + esc(lead.party || "—") + "</b> took the most seats in " + year + " — <b>" + (rec.seats ? Math.round(lead.seats / rec.seats * 100) : 0) + "%</b> of the National Assembly." });
+    tiles.push({ ico: "⚡", num: closest ? fullNum(closest.margin) : "—", lbl: "Votes between 1st and 2nd · " + year,
+      txt: closest ? "<b>" + esc(closest.constituency || closest.na) + "</b>: <b>" + esc(closest.winner_party) + "</b> edged out <b>" + esc(closest.runner_up_party || "—") + "</b>. Proof that one vote can matter." : "No data." });
+    tiles.push({ ico: "💥", num: slide ? slide.margin_pct.toFixed(1) + "%" : "—", lbl: "Biggest landslide · " + year,
+      txt: slide ? "<b>" + esc(slide.constituency || slide.na) + "</b> — <b>" + esc(slide.winner_party) + "</b> won by <b>" + fullNum(slide.margin) + "</b> votes. The runner-up barely made the photo." : "No data." });
+    tiles.push({ ico: "👥", num: crowded ? fullNum(crowded.candidates_count) : "—", lbl: "Candidates on one ballot · " + year,
+      txt: crowded ? "<b>" + esc(crowded.constituency || crowded.na) + "</b> had the longest ballot paper of the year. <b>" + esc(crowded.winner_party) + "</b> came out on top." : "No data." });
+    tiles.push({ ico: "📈", num: growth ? growth.toFixed(growth >= 10 ? 0 : 1) + "×" : "—", lbl: "Voter roll growth since " + firstYear,
+      txt: "From <b>" + compactNum(firstRec.registered_voters) + "</b> voters in " + firstYear + " to <b>" + compactNum(lastRec.registered_voters) + "</b> in " + lastYear + ". The electorate never stops growing." });
+    tiles.push({ ico: "🏆", num: fullNum(king.seats), lbl: "All-time seats · " + king.party,
+      txt: "<b>" + esc(king.party) + "</b> tops the " + firstYear + "–" + lastYear + " table. Runner-up <b>" + esc(second.party) + "</b> holds <b>" + fullNum(second.seats) + "</b>." });
 
-    kpiRowEl.innerHTML = cards.map(function (c) {
-      return '<div class="kpi" style="--kpi-accent:' + c.accent + '">' +
-        '<div class="lbl">' + c.lbl + "</div>" +
-        '<div class="val">' + c.val + (c.sfx ? '<span class="sfx">' + c.sfx + "</span>" : "") + "</div>" +
-        (c.delta || "") +
-        "</div>";
+    var tones = ["rose", "blue", "violet"];
+    kpiRowEl.innerHTML = tiles.map(function (t, i) {
+      return '<div class="tile tone-' + tones[i % 3] + '">' +
+        '<div class="tile-l"><div class="tile-ico">' + t.ico + '</div><div class="tile-num">' + t.num + '</div><div class="tile-lbl">' + t.lbl + "</div></div>" +
+        '<div class="tile-sep"></div>' +
+        '<div class="tile-r"><div>' + t.txt + "</div></div></div>";
     }).join("");
+    var fy = document.getElementById("factsYear");
+    if (fy) fy.textContent = year;
   }
 
   // ===================================================================
