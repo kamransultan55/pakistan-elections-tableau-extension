@@ -8,39 +8,46 @@
   var PROVINCES = [];
 
   var RAW_PARTY_COLOR = {
-    "PPP": "#E4002B", "PPPP": "#E4002B",
-    "PML-N": "#015B33", "PML(N)": "#015B33",
-    "PML-Q": "#1F8A4C", "PML-Q (Q)": "#1F8A4C", "PML-Coun": "#1F8A4C",
-    "PTI": "#DF1E1E",
-    "MQM": "#D4A017", "MQM-P": "#D4A017",
-    "ANP": "#D32F2F",
-    "JUI-F": "#2E7D32", "JUI": "#2E7D32", "JUI-W.P": "#2E7D32",
-    "JI": "#0D47A1",
-    "BNP": "#6D4C41",
-    "IND": "#8A8F98",
-    "IND (PTI)": "#F2994A",
-    "IJI": "#3F9142",
-    "Pakistan Muslim League(QA)": "#2F9E58",
-    "Muttahidda Majlis-e-Amal Pakistan": "#1565C0",
-    "PDA": "#C23047"
+    "PPP": "#ff4d7d", "PPPP": "#ff4d7d",
+    "PML-N": "#2de08f", "PML(N)": "#2de08f",
+    "PML-Q": "#5eead4", "PML-Q (Q)": "#5eead4", "PML-Coun": "#5eead4",
+    "PTI": "#ff9f43",
+    "MQM": "#c084fc", "MQM-P": "#c084fc",
+    "ANP": "#f87171",
+    "JUI-F": "#a3e635", "JUI": "#a3e635", "JUI-W.P": "#a3e635",
+    "JI": "#60a5fa",
+    "BNP": "#e0b48a",
+    "IND": "#94a3b8",
+    "IND (PTI)": "#ffd166",
+    "IJI": "#4ade80",
+    "Pakistan Muslim League(QA)": "#86efac",
+    "Muttahidda Majlis-e-Amal Pakistan": "#38bdf8",
+    "PDA": "#fb7185"
   };
+  var GROUP_COLOR = {
+    "PTI": "#ff9f43", "PPP (s)/PDA": "#ff4d7d", "PML (s)/IJI/PNA": "#2de08f",
+    "Religious Parties": "#38bdf8", "Province Parties": "#c084fc",
+    "Independent Parties": "#94a3b8", "Other Parties": "#64748b"
+  };
+  function groupColor(sg, g) { return GROUP_COLOR[g] || sg.colors[g] || "#64748b"; }
+
 
   var THEME = {
     dark: {
-      text: "#e8edf2", textMid: "#aab4c2", textLo: "#6b7686",
-      tooltipBg: "#0d1319", tooltipBorder: "#223",
-      gridLine: "rgba(255,255,255,0.06)", axisLine: "rgba(255,255,255,0.12)",
-      mapNoData: "#1b232e", mapBorder: "rgba(255,255,255,0.18)",
-      globeOcean1: "#1a2e3d", globeOcean2: "#070c10", globeLand: "#2b3a33",
-      globeGraticule: "rgba(255,255,255,0.07)", globeLandStroke: "rgba(255,255,255,0.1)", globeOuterStroke: "rgba(255,255,255,0.12)",
-      othersBar: "#4b5563"
+      text: "#eaf2ff", textMid: "#9fb3d6", textLo: "#6479a3",
+      tooltipBg: "#0c1736", tooltipBorder: "rgba(94,234,212,0.35)",
+      gridLine: "rgba(120,160,255,0.09)", axisLine: "rgba(120,160,255,0.2)",
+      mapNoData: "#13224a", mapBorder: "rgba(140,190,255,0.28)",
+      globeOcean1: "#12306e", globeOcean2: "#050b24", globeLand: "#1f3a7a",
+      globeGraticule: "rgba(120,180,255,0.12)", globeLandStroke: "rgba(140,200,255,0.22)", globeOuterStroke: "rgba(94,234,212,0.35)",
+      othersBar: "#475a85"
     },
     light: {
-      text: "#161b22", textMid: "#4b5668", textLo: "#8a94a6",
-      tooltipBg: "#ffffff", tooltipBorder: "#d8dee6",
-      gridLine: "rgba(15,23,32,0.08)", axisLine: "rgba(15,23,32,0.18)",
-      mapNoData: "#dde2e7", mapBorder: "rgba(15,23,32,0.18)",
-      globeOcean1: "#dbe6ee", globeOcean2: "#aebfcc", globeLand: "#8fa892",
+      text: "#16204a", textMid: "#4a5a86", textLo: "#8190b4",
+      tooltipBg: "#ffffff", tooltipBorder: "#cfd8f0",
+      gridLine: "rgba(40,60,140,0.09)", axisLine: "rgba(40,60,140,0.2)",
+      mapNoData: "#dfe6f7", mapBorder: "rgba(40,60,140,0.22)",
+      globeOcean1: "#cfdcff", globeOcean2: "#9db4ec", globeLand: "#8aa0d6",
       globeGraticule: "rgba(15,23,32,0.14)", globeLandStroke: "rgba(15,23,32,0.15)", globeOuterStroke: "rgba(15,23,32,0.2)",
       othersBar: "#9aa3b2"
     }
@@ -229,7 +236,7 @@
   function renderPowerLegend() {
     var sg = DATA.sixgroup_trend;
     document.getElementById("powerLegend").innerHTML = sg.groups.map(function (g) {
-      return '<span class="chip"><span class="sw" style="background:' + sg.colors[g] + '"></span>' + g + "</span>";
+      return '<span class="chip"><span class="sw" style="background:' + groupColor(sg, g) + '"></span>' + g + "</span>";
     }).join("");
   }
 
@@ -239,7 +246,7 @@
     return sg.groups.map(function (g) {
       return {
         name: g, type: "bar", stack: "s",
-        itemStyle: { color: sg.colors[g] },
+        itemStyle: { color: groupColor(sg, g) },
         data: sg.series[g].map(function (v, i) {
           return { value: v, itemStyle: { opacity: i === selIdx ? 1 : 0.42 } };
         })
@@ -288,12 +295,12 @@
         { type: "value", axisLabel: { color: T().textLo, fontSize: 11, formatter: function (v) { return compactNum(v); } }, splitLine: { show: false } }
       ],
       series: [
-        { name: "Registered voters", type: "bar", yAxisIndex: 1, data: registered, itemStyle: { color: "rgba(216,180,92,0.35)", borderRadius: [4, 4, 0, 0] }, barWidth: "46%" },
+        { name: "Registered voters", type: "bar", yAxisIndex: 1, data: registered, itemStyle: { color: "rgba(139,92,246,0.5)", borderRadius: [4, 4, 0, 0] }, barWidth: "46%" },
         {
           name: "Turnout %", type: "line", yAxisIndex: 0, data: turnout, smooth: true, symbolSize: 7,
-          lineStyle: { color: "#16a35f", width: 3 }, itemStyle: { color: "#16a35f" },
-          areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(22,163,95,0.35)" }, { offset: 1, color: "rgba(22,163,95,0)" }] } },
-          markPoint: selIdx >= 0 ? { data: [{ coord: [selIdx, turnout[selIdx]], itemStyle: { color: "#d8b45c" } }], symbolSize: 14, label: { show: false } } : undefined
+          lineStyle: { color: "#22d3ee", width: 3, shadowBlur: 12, shadowColor: "rgba(34,211,238,0.7)" }, itemStyle: { color: "#22d3ee" },
+          areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(34,211,238,0.35)" }, { offset: 1, color: "rgba(34,211,238,0)" }] } },
+          markPoint: selIdx >= 0 ? { data: [{ coord: [selIdx, turnout[selIdx]], itemStyle: { color: "#fbbf24" } }], symbolSize: 14, label: { show: false } } : undefined
         }
       ]
     }, true);
@@ -523,7 +530,7 @@
       visualMap = {
         min: vmin, max: vmax, left: 10, bottom: 10, calculable: true, orient: "horizontal",
         textStyle: { color: T().textMid, fontSize: 10 },
-        inRange: { color: metric === "registered" ? ["#2a2410", "#d8b45c"] : ["#0e2a1e", "#16a35f"] }
+        inRange: { color: metric === "registered" ? ["#2a1a5e", "#a78bfa"] : ["#0b2a5a", "#22d3ee"] }
       };
     }
 
@@ -547,8 +554,8 @@
         type: "map", map: "PAK_ADM1", roam: true, scaleLimit: { min: 0.8, max: 6 },
         label: { show: true, color: "#cdd5df", fontSize: 10.5 },
         itemStyle: { borderColor: T().mapBorder, borderWidth: 1 },
-        emphasis: { label: { color: "#fff" }, itemStyle: { borderColor: "#d8b45c", borderWidth: 2, shadowBlur: 14, shadowColor: "rgba(216,180,92,0.6)" } },
-        select: { itemStyle: { borderColor: "#d8b45c", borderWidth: 2.5 } },
+        emphasis: { label: { color: "#fff" }, itemStyle: { borderColor: "#fbbf24", borderWidth: 2, shadowBlur: 14, shadowColor: "rgba(251,191,36,0.6)" } },
+        select: { itemStyle: { borderColor: "#fbbf24", borderWidth: 2.5 } },
         data: data
       }]
     }, true);
@@ -637,8 +644,8 @@
       .attr("fill", T().globeLand).attr("stroke", T().globeLandStroke).attr("stroke-width", 0.5);
     globeLandPath = landPath;
 
-    var marker = globeSvg.append("circle").attr("r", 5).attr("fill", "#d8b45c").attr("stroke", "#0b0f14").attr("stroke-width", 1.5);
-    var pulse = globeSvg.append("circle").attr("r", 5).attr("fill", "none").attr("stroke", "#d8b45c").attr("stroke-width", 1.5).attr("opacity", 0.7);
+    var marker = globeSvg.append("circle").attr("r", 5).attr("fill", "#fbbf24").attr("stroke", "#050b24").attr("stroke-width", 1.5);
+    var pulse = globeSvg.append("circle").attr("r", 5).attr("fill", "none").attr("stroke", "#fbbf24").attr("stroke-width", 1.5).attr("opacity", 0.7);
 
     globeLabelText = globeSvg.append("text").attr("x", 10).attr("y", h - 14).attr("fill", T().textMid).attr("font-size", 10.5).attr("font-family", "Inter, sans-serif")
       .text("Pakistan • 30.37°N, 69.35°E");
@@ -775,7 +782,7 @@
     var badgeText = document.getElementById("envBadgeText");
     if (liveOk) {
       badgeText.textContent = "Running inside Tableau — live data";
-      badge.querySelector(".dot").style.background = "#16a35f";
+      badge.querySelector(".dot").style.background = "#22d3ee";
     } else {
       badgeText.textContent = "Standalone preview";
       boot(window.PK_ELECTIONS_DATA);
